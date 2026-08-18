@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>禮貌版 MBTI・你是哪一種禮貌型</title>
+<meta name="description" content="24 題五點量表,測出你的四字母禮貌型。">
+<style>
+:root{
+  --paper:#F1EEE7; --card:#FBFAF6; --ink:#23272C; --ink-soft:#5C6169;
+  --line:#DED9CE; --seal:#B23A48; --seal-ink:#8F2F3B; --seal-soft:#EFE0DE;
+  --teal:#2F6E68; --teal-soft:#DCE8E5; --accent-soft:#F4EBE9;
+  --serif:"Songti TC","Noto Serif CJK TC","Noto Serif TC",Georgia,"STSong",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:660px;margin:0 auto;padding:32px 20px 72px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 24px}
+@media(min-width:560px){.card{padding:40px 40px}}
+
+.eyebrow{font-size:13px;letter-spacing:.28em;color:var(--seal-ink);text-transform:none;margin:0 0 14px}
+h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.25;margin:0 0 14px;letter-spacing:.01em}
+@media(min-width:560px){h1{font-size:42px}}
+.lead{font-size:16px;color:var(--ink-soft);margin:0 0 26px;max-width:46ch}
+
+.seal{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--seal);color:#FBF3F1;font-family:var(--serif);font-size:34px;font-weight:600;border-radius:10px;transform:rotate(-4deg);box-shadow:0 0 0 3px var(--card),0 0 0 4px var(--seal)}
+.axes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.chip{font-size:13px;color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.chip b{color:var(--seal-ink);font-weight:600}
+
+button{font-family:inherit;cursor:pointer}
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:#FBFAF6;font-size:16px;font-weight:500;border-radius:12px;padding:14px 22px;transition:transform .08s ease,opacity .15s}
+.btn:hover{opacity:.9}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.block{display:block;width:100%;text-align:center}
+:focus-visible{outline:3px solid var(--seal);outline-offset:2px;border-radius:8px}
+
+.hidden{display:none}
+
+.bar-outer{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 10px;margin-bottom:6px}
+.bar-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);margin-bottom:8px}
+.bar-track{height:5px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;width:0;background:var(--seal);border-radius:999px;transition:width .25s ease}
+.legend{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:0 0 4px}
+
+.q{padding:20px 2px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:none}
+.q .stmt{font-size:16px;margin:0 0 14px}
+.q .num{color:var(--seal-ink);font-family:var(--serif);font-weight:600;margin-right:6px}
+.scale{display:flex;gap:8px}
+.opt{flex:1;height:46px;font-size:16px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:11px;transition:.12s}
+.opt:hover{border-color:var(--ink-soft)}
+.opt[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--seal);color:var(--seal-ink);font-weight:600}
+.q.miss .num{color:var(--seal)}
+.q.miss .scale{outline:2px solid var(--seal-soft);outline-offset:6px;border-radius:12px}
+
+.err{color:var(--seal);font-size:14px;margin:18px 0 0;min-height:1px}
+.submit-row{margin-top:22px}
+
+.res-head{display:flex;align-items:center;gap:18px;margin-bottom:6px}
+.code{font-family:var(--serif);font-size:52px;font-weight:600;letter-spacing:.14em;margin:0}
+@media(min-width:560px){.code{font-size:64px}}
+.res-eyebrow{font-size:13px;letter-spacing:.28em;color:var(--ink-soft);margin:0 0 8px}
+.nick{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--seal-ink);margin:14px 0 6px}
+.desc{font-size:16px;color:var(--ink-soft);margin:0 0 4px}
+
+.axis-block{margin:26px 0 8px}
+.axis-row{margin:16px 0}
+.axis-meta{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-bottom:7px}
+.axis-meta .pole{color:var(--ink-soft)}
+.axis-meta .pole.on{color:var(--ink);font-weight:600}
+.axis-meta .name{font-size:12px;color:var(--ink-soft);letter-spacing:.1em}
+.axis-track{position:relative;height:8px;background:var(--teal-soft);border-radius:999px}
+.axis-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:var(--teal);border:3px solid var(--card);transform:translateX(-50%)}
+
+.res-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.res-actions .btn{flex:1;min-width:150px}
+.toast{font-size:13px;color:var(--teal);margin:12px 0 0;min-height:1px}
+.foot{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:30px}
+.foot a{color:var(--seal-ink)}
+
+@keyframes stamp{0%{transform:scale(1.25) rotate(-6deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.stamped{animation:stamp .4s ease-out}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 封面 -->
+  <section id="intro" class="card">
+    <p class="eyebrow">禮貌版 MBTI</p>
+    <h1>你是哪一種<br>禮貌型?</h1>
+    <p class="lead">同樣是有禮貌,有人直來直往、有人婉轉包裝;有人自帶溫度、有人保持分寸。24 題測出屬於你的四字母禮貌型。</p>
+    <div class="axes">
+      <span class="chip"><b>D</b> 直白 / <b>R</b> 婉轉</span>
+      <span class="chip"><b>W</b> 熱絡 / <b>C</b> 淡定</span>
+      <span class="chip"><b>H</b> 真心 / <b>F</b> 場面</span>
+      <span class="chip"><b>P</b> 規矩 / <b>L</b> 隨性</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <button class="btn" onclick="start()">開始測驗</button>
+      <span class="seal" aria-hidden="true">禮</span>
+    </div>
+  </section>
+
+  <!-- 測驗 -->
+  <section id="quiz" class="hidden">
+    <div class="bar-outer">
+      <div class="bar-meta"><span id="count">0 / 24 題</span><span>依直覺作答</span></div>
+      <div class="bar-track"><div class="bar-fill" id="fill"></div></div>
+    </div>
+    <div class="legend"><span>1 非常不同意</span><span>3 普通</span><span>5 非常同意</span></div>
+    <div id="list"></div>
+    <p class="err" id="err"></p>
+    <div class="submit-row"><button class="btn block" onclick="submit()">看我的禮貌型</button></div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="card hidden">
+    <p class="res-eyebrow">你的禮貌型</p>
+    <div class="res-head">
+      <h2 class="code" id="code">----</h2>
+      <span class="seal" aria-hidden="true">禮</span>
+    </div>
+    <p class="nick" id="nick"></p>
+    <p class="desc" id="desc"></p>
+    <div class="axis-block" id="axes"></div>
+    <div class="res-actions">
+      <button class="btn ghost" onclick="restart()">重新測驗</button>
+      <button class="btn" onclick="copyResult()">複製結果分享</button>
+    </div>
+    <p class="toast" id="toast"></p>
+  </section>
+
+  <p class="foot">憑直覺作答,結果僅供娛樂與自我認識 · 沒有標準答案</p>
+</div>
+
+<script>
+const Q=[
+ {t:"覺得菜太鹹、髮型普通,朋友問起時,我會老實講出感覺。",ax:0,r:false},
+ {t:"在電梯或路上遇到半熟的人,我會主動聊上兩句。",ax:1,r:false},
+ {t:"我說「改天約」的時候,通常是真心想約。",ax:2,r:false},
+ {t:"長輩先動筷、座位長幼這類禮節,我會特別留意。",ax:3,r:false},
+ {t:"有意見時,我習慣先包裝一下,用暗示讓對方會意。",ax:0,r:true},
+ {t:"我的禮貌比較內斂,點頭微笑就夠,不太需要多聊。",ax:1,r:true},
+ {t:"就算沒什麼興趣,我也能一路點頭附和、給足反應。",ax:2,r:true},
+ {t:"禮數對我來說心意到就好,形式不用太講究。",ax:3,r:true},
+ {t:"有人插隊時,我會直接開口說「我們有在排隊喔」。",ax:0,r:false},
+ {t:"服務人員辛苦時,我會多說一句關心或道謝的話。",ax:1,r:false},
+ {t:"我很難對不喜歡的人裝熱情,情緒多少會寫在臉上。",ax:2,r:false},
+ {t:"收到別人的幫忙或送禮,我會記清楚並盡快回禮。",ax:3,r:false},
+ {t:"為了不讓場面尷尬,我常把「不要」說成「再看看」。",ax:0,r:true},
+ {t:"比起熱絡,我更喜歡跟人保持一點舒服的距離。",ax:1,r:true},
+ {t:"該說的場面話、該回的禮貌訊息,我都會做得滴水不漏。",ax:2,r:true},
+ {t:"回訊息時我習慣直接講重點,不太在意稱呼和客套。",ax:3,r:true},
+ {t:"不想去的邀約,我會直接說明,而不是含糊帶過。",ax:0,r:false},
+ {t:"群組有人生日或報喜,我常是最熱情回應的那一個。",ax:1,r:false},
+ {t:"我只在真心覺得好的時候,才會稱讚別人。",ax:2,r:false},
+ {t:"正式場合我會把「您」「請問」等敬語用好用滿。",ax:3,r:false},
+ {t:"就算主管的想法我不認同,我也傾向當場提出來。",ax:0,r:false},
+ {t:"認識新朋友時,我會主動破冰、找話題聊。",ax:1,r:false},
+ {t:"不想去的場合,我寧可婉拒,也不想勉強露臉。",ax:2,r:false},
+ {t:"到別人家作客,我會帶伴手禮、進門問候一輪。",ax:3,r:false}
+];
+const AX=[
+ {n:"表達",L:["D","R"],C:["直","婉"]},
+ {n:"溫度",L:["W","C"],C:["熱","淡"]},
+ {n:"動機",L:["H","F"],C:["心","面"]},
+ {n:"規範",L:["P","L"],C:["規","隨"]}
+];
+const T={
+ DWHP:["熱血班長","真誠、直接又周到,把每個人都照顧到位。"],
+ DWHL:["交心哥們","熱情直白零距離,對你好從來都是真的。"],
+ DWFP:["場面主持人","自帶主場光環,場面話說得體面又暖。"],
+ DWFL:["自來熟業務","三秒破冰,人見人熟的社交萬用鑰匙。"],
+ DCHP:["耿直長官","話不多但句句真,規矩裡藏著真心。"],
+ DCHL:["清醒損友","真心話不留情,但你知道他是為你好。"],
+ DCFP:["公事公辦","專業、乾淨、有分寸,禮貌像一套 SOP。"],
+ DCFL:["冷面高手","話少禮到,極簡卻讓人挑不出錯。"],
+ RWHP:["體貼管家","把你的需求記在心上,溫柔又周到。"],
+ RWHL:["暖心閨蜜","說話輕輕的,真心卻是滿滿的。"],
+ RWFP:["八面玲瓏","場面滴水不漏,人人都覺得被照顧到。"],
+ RWFL:["圓場高手","最會讀空氣,再尷尬都能救回來。"],
+ RCHP:["溫柔君子","有禮有節,溫和而有分寸的真誠。"],
+ RCHL:["佛系觀察者","安靜溫和,禮貌得剛剛好。"],
+ RCFP:["得體外交官","進退有據,永遠說得出對的那句話。"],
+ RCFL:["神隱禮貌俠","存在感低,禮數卻從不缺席。"]
+};
+const ans={};
+const list=document.getElementById("list");
+
+function buildList(){
+ list.innerHTML="";
+ Q.forEach((q,i)=>{
+  const row=document.createElement("div");row.className="q";row.id="q"+i;
+  const p=document.createElement("p");p.className="stmt";
+  p.innerHTML='<span class="num">'+(i+1)+'</span>'+q.t;
+  row.appendChild(p);
+  const scale=document.createElement("div");scale.className="scale";
+  const opts=[];
+  for(let v=1;v<=5;v++){
+   const b=document.createElement("button");b.className="opt";b.type="button";b.textContent=v;
+   b.setAttribute("aria-pressed","false");
+   b.setAttribute("aria-label",v+(v===1?" 非常不同意":v===3?" 普通":v===5?" 非常同意":" 分"));
+   b.onclick=()=>{
+     ans[i]=v;
+     opts.forEach((o,k)=>o.setAttribute("aria-pressed",(k+1)===v?"true":"false"));
+     row.classList.remove("miss");
+     document.getElementById("err").textContent="";
+     updateProgress();
+   };
+   opts.push(b);scale.appendChild(b);
+  }
+  row.appendChild(scale);list.appendChild(row);
+ });
+}
+function updateProgress(){
+ const done=Object.keys(ans).length;
+ document.getElementById("count").textContent=done+" / 24 題";
+ document.getElementById("fill").style.width=Math.round(done/24*100)+"%";
+}
+function start(){
+ document.getElementById("intro").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ window.scrollTo({top:0});
+}
+function submit(){
+ const miss=[];
+ for(let i=0;i<Q.length;i++){if(!ans[i])miss.push(i);}
+ document.querySelectorAll(".q").forEach(el=>el.classList.remove("miss"));
+ if(miss.length){
+  document.getElementById("err").textContent="還有 "+miss.length+" 題還沒作答,補完再看結果。";
+  miss.forEach(i=>document.getElementById("q"+i).classList.add("miss"));
+  document.getElementById("q"+miss[0]).scrollIntoView({behavior:"smooth",block:"center"});
+  return;
+ }
+ const sums=[0,0,0,0];
+ Q.forEach((q,i)=>{let v=ans[i];if(q.r)v=6-v;sums[q.ax]+=v;});
+ const idx=sums.map(s=>s>=18?0:1);
+ const code=idx.map((p,a)=>AX[a].L[p]).join("");
+ const info=T[code];
+ document.getElementById("code").textContent=code;
+ document.getElementById("nick").textContent=info[0];
+ document.getElementById("desc").textContent=info[1];
+ const ax=document.getElementById("axes");ax.innerHTML="";
+ AX.forEach((a,ai)=>{
+  const pos=Math.round((sums[ai]-6)/24*100);
+  const on0=idx[ai]===0, on1=idx[ai]===1;
+  const row=document.createElement("div");row.className="axis-row";
+  row.innerHTML=
+    '<div class="axis-meta">'
+    +'<span class="pole '+(on1?"on":"")+'">'+a.L[1]+' '+a.C[1]+'</span>'
+    +'<span class="name">'+a.n+'</span>'
+    +'<span class="pole '+(on0?"on":"")+'">'+a.L[0]+' '+a.C[0]+'</span></div>'
+    +'<div class="axis-track"><div class="axis-dot" style="left:'+pos+'%"></div></div>';
+  ax.appendChild(row);
+ });
+ window.__code=code;window.__info=info;
+ document.getElementById("quiz").classList.add("hidden");
+ const res=document.getElementById("result");
+ res.classList.remove("hidden");
+ res.querySelector(".seal").classList.add("stamped");
+ window.scrollTo({top:0});
+}
+function restart(){
+ for(const k in ans)delete ans[k];
+ buildList();updateProgress();
+ document.getElementById("toast").textContent="";
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("intro").classList.remove("hidden");
+ window.scrollTo({top:0});
+}
+function copyResult(){
+ const c=window.__code,info=window.__info;
+ const url=location.href.split("#")[0];
+ const text="我的禮貌型是 "+c+"「"+info[0]+"」——"+info[1]+" 來測你的:"+url;
+ const done=()=>{document.getElementById("toast").textContent="已複製,貼上就能分享給朋友。";};
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+   navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text,done));
+ }else{fallback(text,done);}
+}
+function fallback(text,done){
+ const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+ document.body.appendChild(ta);ta.select();
+ try{document.execCommand("copy");done();}catch(e){document.getElementById("toast").textContent="複製失敗,請手動選取。";}
+ document.body.removeChild(ta);
+}
+buildList();
+</script>
+</body>
+</html>
